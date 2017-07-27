@@ -6,16 +6,14 @@ html(class="no-js" lang="")
         title 
         meta(name="description" content="")
         meta(name="viewport" content="width=device-width, initial-scale=1")
-        link(rel="stylesheet" href="assets/css/main.css")
+        // main:css
+        // endinject
         link(rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Mono")
         script(src="https://use.typekit.net/yur1eqd.js")
         script.
             try{Typekit.load({ async: true });}catch(e){}
     body
-        
-        script(src="https://code.jquery.com/jquery-2.2.0.min.js")
-        script  window.jQuery || document.write('<script src="js/vendor/jquery-2.2.0.min.js"><\/script>')
-        script(src="assets/js/main.js")
-
+        // bundle:js
+        // endinject
         script  window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date; ga('create','UA-XXXXX-Y','auto');ga('send','pageview')
         script(src="https://www.google-analytics.com/analytics.js" async defer)

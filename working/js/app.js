@@ -1,4 +1,4 @@
-'use strict';
+/* globals jQuery */
 
 ;(function($){
 	'use strict';
