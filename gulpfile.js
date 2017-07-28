@@ -124,60 +124,47 @@ gulp.task('images', function() {
         });
 });
 
-gulp.task('html:dev', function() {
+gulp.task('html', function() {
     return gulp.src(['working/pug/**/*.pug'])
     .pipe(pug({
         locals: {}
     }))
     .pipe(gulp.dest(dist))
-    .pipe(reload({stream:true}));
-});
-
-gulp.task('html:prod', function() {
-    return gulp.src(['working/pug/**/*.pug'])
-    .pipe(pug({
-        locals: {}
-    }))
-    .pipe(gulp.dest(dist))
-    .pipe(reload({stream:true}));
+    .on('finish', function() {
+        util.log(util.colors.green('HTML complete'));
+        gulp.start('inject');
+    });
 });
 
 gulp.task('clean', function() {
     return del.sync([dist]);
 });
 
-gulp.task('inject:dev', ['css:dev', 'js:dev'], function() {
+gulp.task('inject', function() {
     var js = gulp.src([asset_path + '/**/*.js'], { read: false });
     var css = gulp.src([asset_path + '/**/*.css'], { read: false });
     return gulp.src(dist+'/index.html')
         .pipe(inject(js, { name: 'bundle', relative: true }))
         .pipe(inject(css, { name: 'main', relative: true }))
         .pipe(gulp.dest(dist))
+        .pipe(reload({stream:true}))
         .on('finish', function() {
-            util.log(util.colors.red('Development: Assets injected'));
+            util.log(util.colors.green('Assets injected'));
         });
 });
 
-gulp.task('inject:prod', ['css:prod', 'js:prod'], function() {
-    var js = gulp.src([asset_path + '/**/*.js'], { read: false });
-    var css = gulp.src([asset_path + '/**/*.css'], { read: false });
-    return gulp.src(dist+'/index.html')
-        .pipe(inject(js, { name: 'bundle', relative: true }))
-        .pipe(inject(css, { name: 'main', relative: true }))
-        .pipe(gulp.dest(dist))
-        .on('finish', function() {
-            util.log(util.colors.red('Production: Assets injected'));
-        });
+gulp.task('default', ['clean', 'css:dev', 'js:dev', 'images', 'fonts'], function(){
+    gulp.start('html','watch','browser-sync');
 });
 
-gulp.task('default', ['clean', 'html:dev', 'images', 'fonts', 'inject:dev', 'watch', 'browser-sync']);
-
-gulp.task('prod', ['clean', 'html:prod', 'images', 'fonts', 'inject:prod' ]);
+gulp.task('prod', ['clean', 'css:prod', 'js:prod', 'images', 'fonts'], function(){
+    gulp.start('html');
+});
 
 gulp.task('watch', function() {
 
     // Watch .pug files
-    gulp.watch('working/pug/**/*.pug', ['html:dev']);
+    gulp.watch('working/pug/**/*.pug', ['html']);
 
     // Watch .scss files
     gulp.watch('working/scss/**/**/*.scss', ['css:dev']);
